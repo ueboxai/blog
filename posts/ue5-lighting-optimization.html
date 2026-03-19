@@ -8,147 +8,174 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .prose h2 { @apply text-2xl font-bold mt-8 mb-4 text-gray-900; }
-        .prose h3 { @apply text-xl font-semibold mt-6 mb-3 text-gray-800; }
-        .prose p { @apply mb-4 text-gray-700 leading-relaxed; }
-        .prose ul { @apply list-disc list-inside mb-4 text-gray-700; }
-        .prose code { @apply bg-gray-100 px-2 py-1 rounded text-sm font-mono text-red-600; }
-        .prose pre { @apply bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto mb-4; }
-        .prose blockquote { @apply border-l-4 border-blue-500 pl-4 italic text-gray-600 mb-4; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .prose h2 { @apply text-2xl font-bold mt-12 mb-6 text-white; }
+        .prose h3 { @apply text-xl font-semibold mt-8 mb-4 text-slate-200; }
+        .prose p { @apply mb-6 text-slate-300 leading-relaxed; }
+        .prose ul { @apply list-disc list-inside mb-6 text-slate-300 space-y-2; }
+        .prose ol { @apply list-decimal list-inside mb-6 text-slate-300 space-y-2; }
+        .prose code { @apply bg-slate-800 px-2 py-1 rounded text-sm font-mono text-blue-400; }
+        .prose pre { @apply bg-slate-900 border border-slate-700 text-slate-300 p-4 rounded-xl overflow-x-auto mb-6; }
+        .prose pre code { @apply bg-transparent text-slate-300 p-0; }
+        .prose blockquote { @apply border-l-4 border-blue-500 pl-4 italic text-slate-400 mb-6 bg-slate-800/50 py-3 pr-4 rounded-r-lg; }
+        .prose a { @apply text-blue-400 hover:text-blue-300 transition; }
+        .prose strong { @apply text-white; }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
+<body class="bg-slate-950 text-slate-200">
     <!-- Header -->
-    <header class="bg-white shadow-sm sticky top-0 z-50">
+    <header class="sticky top-0 z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800">
         <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
-            <a href="/" class="flex items-center space-x-2">
-                <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
+            <a href="/" class="flex items-center space-x-3">
+                <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
                     <i class="fas fa-cube text-white text-sm"></i>
                 </div>
-                <span class="text-lg font-bold text-gray-900">虚幻盒子博客</span>
+                <span class="text-white font-semibold">虚幻盒子博客</span>
             </a>
-            <a href="/" class="text-gray-600 hover:text-blue-600">
+            <a href="/" class="text-slate-400 hover:text-white transition">
                 <i class="fas fa-arrow-left mr-1"></i>返回首页
             </a>
         </div>
     </header>
 
-    <!-- Article -->
-    <article class="max-w-3xl mx-auto px-4 py-12">
-        <!-- Meta -->
-        <div class="mb-8">
-            <div class="flex items-center space-x-2 mb-4">
-                <span class="px-3 py-1 bg-blue-100 text-blue-600 text-sm rounded-full">UE5</span>
-                <span class="px-3 py-1 bg-green-100 text-green-600 text-sm rounded-full">性能优化</span>
+    <!-- Article Header -->
+    <section class="relative overflow-hidden border-b border-slate-800">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-900/10 via-slate-950 to-purple-900/10"></div>
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-3xl"></div>
+        
+        <div class="relative max-w-4xl mx-auto px-4 py-16">
+            <div class="flex items-center space-x-2 mb-6">
+                <span class="px-3 py-1 bg-blue-500/20 text-blue-400 text-sm rounded-full">UE5</span>
+                <span class="px-3 py-1 bg-green-500/20 text-green-400 text-sm rounded-full">性能优化</span>
             </div>
-            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">UE5 光照烘焙优化完全指南</h1>
-            <div class="flex items-center text-gray-500 text-sm">
-                <span class="mr-4"><i class="far fa-calendar mr-1"></i>2026年3月19日</span>
-                <span class="mr-4"><i class="far fa-clock mr-1"></i>8 分钟阅读</span>
-                <span><i class="far fa-user mr-1"></i>虚幻盒子团队</span>
+            <h1 class="text-3xl md:text-5xl font-bold text-white mb-6">UE5 光照烘焙优化完全指南</h1>
+            <div class="flex flex-wrap items-center text-slate-400 text-sm gap-4">
+                <span><i class="far fa-calendar mr-2"></i>2026年3月19日</span>
+                <span><i class="far fa-clock mr-2"></i>8 分钟阅读</span>
+                <span><i class="far fa-user mr-2"></i>虚幻盒子团队</span>
             </div>
         </div>
+    </section>
 
-        <!-- Content -->
-        <div class="prose max-w-none">
-            <p class="text-lg text-gray-600 mb-6">
-                光照是游戏画面品质的核心，但也是性能杀手。本文将从 Lumen 动态光照到静态光照烘焙，全面解析 UE5 光照系统的优化策略，帮助你的项目在保证画质的同时提升 50% 帧率。
-            </p>
+    <!-- Article Content -->
+    <article class="max-w-4xl mx-auto px-4 py-12">
+        <div class="glass-card rounded-2xl p-8 md:p-12 mb-12">
+            <div class="prose max-w-none">
+                <p class="text-lg text-slate-300 mb-8">
+                    光照是游戏画面品质的核心，但也是性能杀手。本文将从 Lumen 动态光照到静态光照烘焙，全面解析 UE5 光照系统的优化策略，帮助你的项目在保证画质的同时提升 50% 帧率。
+                </p>
 
-            <h2>一、理解 UE5 光照系统架构</h2>
-            <p>UE5 提供了两套光照方案：</p>
-            <ul>
-                <li><strong>Lumen</strong>：全动态全局光照，无需烘焙，适合开放世界和快速迭代</li>
-                <li><strong>静态光照</strong>：预计算光照贴图，运行时开销极低，适合移动端和固定场景</li>
-            </ul>
-            <blockquote>
-                关键决策：你的项目适合哪种方案？90% 的性能问题源于错误的选择。
-            </blockquote>
+                <h2>一、理解 UE5 光照系统架构</h2>
+                <p>UE5 提供了两套光照方案：</p>
+                <ul>
+                    <li><strong>Lumen</strong>：全动态全局光照，无需烘焙，适合开放世界和快速迭代</li>
+                    <li><strong>静态光照</strong>：预计算光照贴图，运行时开销极低，适合移动端和固定场景</li>
+                </ul>
+                <blockquote>
+                    关键决策：你的项目适合哪种方案？90% 的性能问题源于错误的选择。
+                </blockquote>
 
-            <h2>二、Lumen 优化实战</h2>
-            <h3>2.1 控制 Lumen 光线追踪距离</h3>
-            <p>Lumen 默认会追踪很远的光线，但远处的间接光对画面影响很小。通过控制台命令限制追踪距离：</p>
-            <pre>r.Lumen.Reflections.MaxDistance 5000
+                <h2>二、Lumen 优化实战</h2>
+                <h3>2.1 控制 Lumen 光线追踪距离</h3>
+                <p>Lumen 默认会追踪很远的光线，但远处的间接光对画面影响很小。通过控制台命令限制追踪距离：</p>
+                <pre><code>r.Lumen.Reflections.MaxDistance 5000
 r.Lumen.DiffuseIndirect.Allow 1
-r.Lumen.ScreenProbeGather.DownsampleFactor 2</pre>
+r.Lumen.ScreenProbeGather.DownsampleFactor 2</code></pre>
 
-            <h3>2.2 合理使用硬件光追 vs 软件光追</h3>
-            <p>硬件光追（HWRT）质量高但开销大，软件光追（SSRT）性能更好。根据平台选择：</p>
-            <ul>
-                <li>PC 高端显卡：启用 HWRT</li>
-                <li>主机/中端 PC：混合模式</li>
-                <li>移动端：关闭 Lumen，使用烘焙光照</li>
-            </ul>
+                <h3>2.2 合理使用硬件光追 vs 软件光追</h3>
+                <p>硬件光追（HWRT）质量高但开销大，软件光追（SSRT）性能更好。根据平台选择：</p>
+                <ul>
+                    <li>PC 高端显卡：启用 HWRT</li>
+                    <li>主机/中端 PC：混合模式</li>
+                    <li>移动端：关闭 Lumen，使用烘焙光照</li>
+                </ul>
 
-            <h2>三、静态光照烘焙优化</h2>
-            <h3>3.1 光照贴图分辨率控制</h3>
-            <p>过高的光照贴图分辨率会浪费内存和烘焙时间。建议：</p>
-            <ul>
-                <li>小物体：32-64 px</li>
-                <li>中等物体：128-256 px</li>
-                <li>大型建筑：512-1024 px</li>
-            </ul>
+                <h2>三、静态光照烘焙优化</h2>
+                <h3>3.1 光照贴图分辨率控制</h3>
+                <p>过高的光照贴图分辨率会浪费内存和烘焙时间。建议：</p>
+                <ul>
+                    <li>小物体：32-64 px</li>
+                    <li>中等物体：128-256 px</li>
+                    <li>大型建筑：512-1024 px</li>
+                </ul>
 
-            <h3>3.2 使用光照贴图 UV 优化工具</h3>
-            <p>虚幻盒子提供了智能光照贴图 UV 生成工具，可以：</p>
-            <ul>
-                <li>自动检测 UV 重叠</li>
-                <li>优化 UV 布局利用率</li>
-                <li>批量处理场景中的所有静态网格</li>
-            </ul>
+                <h3>3.2 使用光照贴图 UV 优化工具</h3>
+                <p>虚幻盒子提供了智能光照贴图 UV 生成工具，可以：</p>
+                <ul>
+                    <li>自动检测 UV 重叠</li>
+                    <li>优化 UV 布局利用率</li>
+                    <li>批量处理场景中的所有静态网格</li>
+                </ul>
 
-            <h2>四、混合光照策略</h2>
-            <p>最佳实践是混合使用动态和静态光照：</p>
-            <ul>
-                <li><strong>静态部分</strong>：建筑、地形等不移动的对象使用烘焙光照</li>
-                <li><strong>动态部分</strong>：角色、可移动物体使用 Lumen 或 Movable 光源</li>
-                <li><strong>过渡区域</strong>：使用 Stationary 光源，兼顾质量和性能</li>
-            </ul>
+                <h2>四、混合光照策略</h2>
+                <p>最佳实践是混合使用动态和静态光照：</p>
+                <ul>
+                    <li><strong>静态部分</strong>：建筑、地形等不移动的对象使用烘焙光照</li>
+                    <li><strong>动态部分</strong>：角色、可移动物体使用 Lumen 或 Movable 光源</li>
+                    <li><strong>过渡区域</strong>：使用 Stationary 光源，兼顾质量和性能</li>
+                </ul>
 
-            <h2>五、性能监控与调试</h2>
-            <p>使用以下命令监控光照性能：</p>
-            <pre>stat gpu          # 查看 GPU 各阶段耗时
+                <h2>五、性能监控与调试</h2>
+                <p>使用以下命令监控光照性能：</p>
+                <pre><code>stat gpu          # 查看 GPU 各阶段耗时
 stat lumen        # Lumen 专项统计
-stat lightrendering  # 光照渲染统计</pre>
+stat lightrendering  # 光照渲染统计</code></pre>
 
-            <h2>总结</h2>
-            <p>光照优化没有银弹，需要根据项目类型、目标平台和美术需求做出权衡。记住三个原则：</p>
-            <ol class="list-decimal list-inside mb-4 text-gray-700">
-                <li>能静态烘焙的尽量烘焙</li>
-                <li>动态光照只给需要移动的对象</li>
-                <li>持续监控，数据驱动优化</li>
-            </ol>
+                <h2>总结</h2>
+                <p>光照优化没有银弹，需要根据项目类型、目标平台和美术需求做出权衡。记住三个原则：</p>
+                <ol>
+                    <li>能静态烘焙的尽量烘焙</li>
+                    <li>动态光照只给需要移动的对象</li>
+                    <li>持续监控，数据驱动优化</li>
+                </ol>
 
-            <blockquote>
-                使用<a href="https://uebox.ai" target="_blank" class="text-blue-600">虚幻盒子</a>的自动化光照分析工具，可以一键检测场景中的光照性能瓶颈，并提供优化建议。
-            </blockquote>
+                <blockquote>
+                    使用<a href="https://uebox.ai" target="_blank">虚幻盒子</a>的自动化光照分析工具，可以一键检测场景中的光照性能瓶颈，并提供优化建议。
+                </blockquote>
+            </div>
         </div>
 
         <!-- Tags -->
-        <div class="mt-12 pt-8 border-t">
-            <div class="flex items-center space-x-2">
-                <span class="text-gray-500">标签：</span>
-                <a href="/tags/ue5" class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm hover:bg-gray-200">UE5</a>
-                <a href="/tags/性能优化" class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm hover:bg-gray-200">性能优化</a>
-                <a href="/tags/光照" class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm hover:bg-gray-200">光照</a>
-                <a href="/tags/Lumen" class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm hover:bg-gray-200">Lumen</a>
-            </div>
+        <div class="flex items-center space-x-2 mb-12">
+            <span class="text-slate-400">标签：</span>
+            <a href="/tags/ue5" class="px-3 py-1 bg-slate-800 text-slate-300 rounded-full text-sm hover:bg-slate-700 transition">UE5</a>
+            <a href="/tags/性能优化" class="px-3 py-1 bg-slate-800 text-slate-300 rounded-full text-sm hover:bg-slate-700 transition">性能优化</a>
+            <a href="/tags/光照" class="px-3 py-1 bg-slate-800 text-slate-300 rounded-full text-sm hover:bg-slate-700 transition">光照</a>
+            <a href="/tags/Lumen" class="px-3 py-1 bg-slate-800 text-slate-300 rounded-full text-sm hover:bg-slate-700 transition">Lumen</a>
         </div>
 
         <!-- CTA -->
-        <div class="mt-12 bg-blue-50 rounded-xl p-8 text-center">
-            <h3 class="text-xl font-bold text-gray-900 mb-2">提升 UE 开发效率</h3>
-            <p class="text-gray-600 mb-4">使用虚幻盒子的自动化工具，让光照优化事半功倍</p>
-            <a href="https://uebox.ai" target="_blank" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition">
+        <div class="glass-card rounded-2xl p-8 text-center">
+            <h3 class="text-xl font-bold text-white mb-2">提升 UE 开发效率</h3>
+            <p class="text-slate-400 mb-6">使用虚幻盒子的自动化工具，让光照优化事半功倍</p>
+            <a href="https://uebox.ai" target="_blank" class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition">
                 免费试用虚幻盒子 <i class="fas fa-arrow-right ml-2"></i>
             </a>
         </div>
     </article>
 
     <!-- Footer -->
-    <footer class="bg-gray-100 py-8 mt-12">
-        <div class="max-w-4xl mx-auto px-4 text-center text-gray-600">
-            <p>&copy; 2026 虚幻盒子 UEBox. All rights reserved.</p>
+    <footer class="border-t border-slate-800 py-12">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <div class="flex items-center justify-center space-x-3 mb-4">
+                <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-cube text-white text-sm"></i>
+                </div>
+                <span class="text-white font-semibold">虚幻盒子</span>
+            </div>
+            <p class="text-slate-500 text-sm">&copy; 2026 UEBox. All rights reserved.</p>
         </div>
     </footer>
 </body>
