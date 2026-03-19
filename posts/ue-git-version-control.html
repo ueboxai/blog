@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UE 项目版本控制实战：Git + 虚幻盒子的完整工作流 - 虚幻盒子博客</title>
+    <meta name="description" content="大型 UE 项目如何使用 Git 进行版本控制，解决二进制资产冲突、LFS 配置、分支策略等实际问题">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        .gradient-text { background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .glass-card { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .prose h2 { @apply text-2xl font-bold mt-12 mb-6 text-white; }
+        .prose h3 { @apply text-xl font-semibold mt-8 mb-4 text-slate-200; }
+        .prose p { @apply mb-6 text-slate-300 leading-relaxed; }
+        .prose ul { @apply list-disc list-inside mb-6 text-slate-300 space-y-2; }
+        .prose ol { @apply list-decimal list-inside mb-6 text-slate-300 space-y-2; }
+        .prose code { @apply bg-slate-800 px-2 py-1 rounded text-sm font-mono text-blue-400; }
+        .prose pre { @apply bg-slate-900 border border-slate-700 text-slate-300 p-4 rounded-xl overflow-x-auto mb-6; }
+        .prose pre code { @apply bg-transparent text-slate-300 p-0; }
+        .prose blockquote { @apply border-l-4 border-blue-500 pl-4 italic text-slate-400 mb-6 bg-slate-800/50 py-3 pr-4 rounded-r-lg; }
+        .prose a { @apply text-blue-400 hover:text-blue-300 transition; }
+        .prose strong { @apply text-white; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200">
+    <header class="sticky top-0 z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+            <a href="/" class="flex items-center space-x-3">
+                <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center"><i class="fas fa-cube text-white text-sm"></i></div>
+                <span class="text-white font-semibold">虚幻盒子博客</span>
+            </a>
+            <a href="/" class="text-slate-400 hover:text-white transition"><i class="fas fa-arrow-left mr-1"></i>返回首页</a>
+        </div>
+    </header>
+
+    <section class="relative overflow-hidden border-b border-slate-800">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-900/10 via-slate-950 to-purple-900/10"></div>
+        <div class="relative max-w-4xl mx-auto px-4 py-16">
+            <div class="flex items-center space-x-2 mb-6">
+                <span class="px-3 py-1 bg-orange-500/20 text-orange-400 text-sm rounded-full">Git</span>
+                <span class="px-3 py-1 bg-blue-500/20 text-blue-400 text-sm rounded-full">版本控制</span>
+                <span class="px-3 py-1 bg-green-500/20 text-green-400 text-sm rounded-full">工作流</span>
+            </div>
+            <h1 class="text-3xl md:text-5xl font-bold text-white mb-6">UE 项目版本控制实战：Git + 虚幻盒子的完整工作流</h1>
+            <div class="flex flex-wrap items-center text-slate-400 text-sm gap-4">
+                <span><i class="far fa-calendar mr-2"></i>2026年3月21日</span>
+                <span><i class="far fa-clock mr-2"></i>10 分钟阅读</span>
+                <span><i class="far fa-user mr-2"></i>虚幻盒子团队</span>
+            </div>
+        </div>
+    </section>
+
+    <article class="max-w-4xl mx-auto px-4 py-12">
+        <div class="glass-card rounded-2xl p-8 md:p-12 mb-12">
+            <div class="prose max-w-none">
+                <p class="text-lg text-slate-300 mb-8">
+                    Unreal Engine 项目使用 Git 版本控制面临独特挑战：二进制资产（.uasset、.umap）无法合并、仓库体积庞大、LFS 配置复杂。本文基于 3 年大型 UE 项目经验，提供一套完整的 Git + 虚幻盒子解决方案。
+                </p>
+
+                <h2>一、UE 项目 Git 配置基础</h2>
+
+                <h3>1.1 为什么 UE 项目需要特殊配置</h3>
+                <p>与传统代码项目不同，UE 项目包含大量二进制资产：</p>
+                <ul>
+                    <li><code>.uasset</code> - 材质、纹理、蓝图等资产文件</li>
+                    <li><code>.umap</code> - 关卡文件</li>
+                    <li><code>.uproject</code> - 项目配置文件</li>
+                    <li>导入的原始资源（FBX、PSD、WAV 等）</li>
+                </ul>
+                <p>这些文件无法像代码一样 diff 和 merge，需要 Git LFS（Large File Storage）管理。</p>
+
+                <h3>1.2 初始化配置清单</h3>
+                <p>创建 <code>.gitattributes</code> 文件：</p>
+                <pre><code># UE 资产文件使用 LFS
+*.uasset filter=lfs diff=lfs merge=lfs -text
+*.umap filter=lfs diff=lfs merge=lfs -text
+*.uproject filter=lfs diff=lfs merge=lfs -text
+*.udk filter=lfs diff=lfs merge=lfs -text
+
+# 原始资源文件
+*.fbx filter=lfs diff=lfs merge=lfs -text
+*.obj filter=lfs diff=lfs merge=lfs -text
+*.psd filter=lfs diff=lfs merge=lfs -text
+*.png filter=lfs diff=lfs merge=lfs -text
+*.jpg filter=lfs diff=lfs merge=lfs -text
+*.wav filter=lfs diff=lfs merge=lfs -text
+*.mp3 filter=lfs diff=lfs merge=lfs -text
+*.mp4 filter=lfs diff=lfs merge=lfs -text
+
+# 构建产物（不应该提交）
+Binaries/ export-ignore
+Build/ export-ignore
+DerivedDataCache/ export-ignore
+Intermediate/ export-ignore
+Saved/ export-ignore
+*.sln export-ignore</code></pre>
+
+                <p>创建 <code>.gitignore</code> 文件：</p>
+                <pre><code># Visual Studio
+.vs/
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+
+# UE 构建产物
+Binaries/
+Build/
+DerivedDataCache/
+Intermediate/
+Saved/
+
+# 插件构建产物
+Plugins/*/Binaries/
+Plugins/*/Intermediate/
+
+# 临时文件
+*.tmp
+*.temp
+*.log
+
+# IDE
+.idea/
+.vscode/
+*.code-workspace
+
+# 操作系统
+.DS_Store
+Thumbs.db</code></pre>
+
+                <h2>二、Git LFS 深度配置</h2>
+
+                <h3>2.1 LFS 存储配额管理</h3>
+                <p>GitHub LFS 免费配额 1GB，大型项目很快会用完。解决方案：</p>
+                <ul>
+                    <li>使用 <a href="https://git-lfs.github.com/">Git LFS</a> + 自建存储（MinIO、AWS S3）</li>
+                    <li>或使用虚幻盒子的资产托管服务</li>
+                </ul>
+
+                <p>配置自建 LFS 服务器：</p>
+                <pre><code># 配置 LFS 服务器
+ git config lfs.url "https://lfs.yourcompany.com"
+
+# 或者在 .lfsconfig 文件中
+[lfs]
+    url = "https://lfs.yourcompany.com"</code></pre>
+
+                <h3>2.2 LFS 文件迁移</h3>
+                <p>已有项目迁移到 LFS：</p>
+                <pre><code># 1. 安装 git-lfs
+ git lfs install
+
+# 2. 追踪现有文件
+ git lfs track "*.uasset"
+ git lfs track "*.umap"
+
+# 3. 迁移历史提交（重写历史）
+ git lfs migrate import --include="*.uasset,*.umap"
+
+# 4. 强制推送（谨慎操作！）
+ git push --force</code></pre>
+
+                <h2>三、分支策略与协作工作流</h2>
+
+                <h3>3.1 推荐的分支模型</h3>
+                <p>基于 Git Flow  adapted for UE：</p>
+                <ul>
+                    <li><strong>main</strong> - 稳定版本，随时可发布</li>
+                    <li><strong>develop</strong> - 开发分支，日常集成</li>
+                    <li><strong>feature/*</strong> - 功能分支，如 feature/new-weapon</li>
+                    <li><strong>release/*</strong> - 发布分支，如 release/v1.2</li>
+                    <li><strong>hotfix/*</strong> - 紧急修复分支</li>
+                </ul>
+
+                <h3>3.2 UE 特有的分支注意事项</h3>
+                <p><strong>关卡编辑冲突</strong>是最大痛点。解决方案：</p>
+                <ol>
+                    <li><strong>关卡分区</strong>：将大关卡拆分为多个子关卡，不同人负责不同区域</li>
+                    <li><strong>数据层分离</strong>：Gameplay 数据放在 Data Table，不直接存在关卡中</li>
+                    <li><strong>锁定机制</strong>：编辑关卡前在团队频道声明，避免同时编辑</li>
+                </ol>
+
+                <blockquote>
+                    虚幻盒子的<strong>资产锁定功能</strong>可以自动检测谁正在编辑哪个关卡，并在尝试编辑时给出警告。
+                </blockquote>
+
+                <h2>四、二进制资产冲突解决</h2>
+
+                <h3>4.1 冲突不可避免</h3>
+                <p>当两个人同时修改同一个 .uasset 或 .umap 文件时，Git 无法自动合并，会产生冲突。</p>
+
+                <h3>4.2 冲突解决流程</h3>
+                <pre><code># 1. 拉取最新代码
+ git pull origin develop
+
+# 2. 发现冲突
+# Auto-merging Content/Weapons/Rifle.uasset
+# CONFLICT (content): Merge conflict in Content/Weapons/Rifle.uasset
+
+# 3. 查看冲突文件
+ git status
+
+# 4. 使用 UE 编辑器解决（见下文）
+# 5. 标记为已解决
+ git add Content/Weapons/Rifle.uasset
+
+# 6. 完成合并
+ git commit -m "Resolve conflict in Rifle.uasset"</code></pre>
+
+                <h3>4.3 UE 编辑器中的冲突解决</h3>
+                <p>UE 提供了<strong>资产合并工具</strong>（需启用 Source Control 插件）：</p>
+                <ol>
+                    <li>打开编辑器，连接 Git 源码控制</li>
+                    <li>在 Content Browser 中找到冲突文件</li>
+                    <li>右键 → Source Control → Merge</li>
+                    <li>使用可视化工具选择保留哪个版本</li>
+                </ol>
+
+                <p>如果没有启用 Source Control 插件，可以手动：</p>
+                <ol>
+                    <li>备份冲突文件</li>
+                    <li>从 Git 历史中提取两个版本的文件</li>
+                    <li>在 UE 中分别打开，手动对比合并</li>
+                </ol>
+
+                <h2>五、虚幻盒子的增强功能</h2>
+
+                <h3>5.1 资产变更追踪</h3>
+                <p>虚幻盒子可以：</p>
+                <ul>
+                    <li>自动记录每次提交修改了哪些资产</li>
+                    <li>生成可视化的资产变更历史</li>
+                    <li>快速回滚到任意版本</li>
+                </ul>
+
+                <h3>5.2 智能冲突预警</h3>
+                <p>在提交前自动检查：</p>
+                <ul>
+                    <li>是否有其他人正在编辑相同文件</li>
+                    <li>资产引用是否断裂</li>
+                    <li>关卡是否包含未保存的更改</li>
+                </ul>
+
+                <h3>5.3 资产差异可视化</h3>
+                <p>传统 Git 无法显示 .uasset 的差异，虚幻盒子可以：</p>
+                <ul>
+                    <li>显示材质参数变化</li>
+                    <li>对比蓝图节点差异</li>
+                    <li>预览纹理修改前后</li>
+                </ul>
+
+                <h2>六、CI/CD 集成</h2>
+
+                <h3>6.1 自动化构建</h3>
+                <p>配置 GitHub Actions 自动构建：</p>
+                <pre><code>name: UE Build
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        lfs: true
+
+    - name: Setup UE
+      uses: unreal-actions/setup-unreal@v1
+      with:
+        version: '5.3'
+
+    - name: Build Project
+      run: |
+        "C:\Program Files\Epic Games\UE_5.3\Engine\Build\BatchFiles\Build.bat" ^
+          MyProjectEditor Win64 Development ^
+          "%~dp0MyProject.uproject" -waitmutex</code></pre>
+
+                <h2>总结</h2>
+                <p>UE 项目的 Git 版本控制需要特别注意：</p>
+                <ol>
+                    <li>正确配置 Git LFS 管理二进制资产</li>
+                    <li>建立合理的分支策略，避免关卡冲突</li>
+                    <li>掌握二进制资产冲突的解决方法</li>
+                    <li>使用虚幻盒子等工具增强版本控制能力</li>
+                </ol>
+
+                <blockquote>
+                    良好的版本控制习惯是团队协作的基础。虚幻盒子的资产管理和版本控制功能，可以让 UE 项目的 Git 工作流更加顺畅。
+                </blockquote>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-2 mb-12">
+            <span class="text-slate-400">标签：</span>
+            <a href="/tags/git" class="px-3 py-1 bg-slate-800 text-slate-300 rounded-full text-sm hover:bg-slate-700 transition">Git</a>
+            <a href="/tags/版本控制" class="px-3 py-1 bg-slate-800 text-slate-300 rounded-full text-sm hover:bg-slate-700 transition">版本控制</a>
+            <a href="/tags/团队协作" class="px-3 py-1 bg-slate-800 text-slate-300 rounded-full text-sm hover:bg-slate-700 transition">团队协作</a>
+        </div>
+
+        <div class="glass-card rounded-2xl p-8 text-center">
+            <h3 class="text-xl font-bold text-white mb-2">提升 UE 开发效率</h3>
+            <p class="text-slate-400 mb-6">使用虚幻盒子的版本控制增强工具，让团队协作更顺畅</p>
+            <a href="https://uebox.ai" target="_blank" class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition">免费试用虚幻盒子 <i class="fas fa-arrow-right ml-2"></i></a>
+        </div>
+    </article>
+
+    <footer class="border-t border-slate-800 py-12">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <div class="flex items-center justify-center space-x-3 mb-4">
+                <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center"><i class="fas fa-cube text-white text-sm"></i></div>
+                <span class="text-white font-semibold">虚幻盒子</span>
+            </div>
+            <p class="text-slate-500 text-sm">&copy; 2026 UEBox. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

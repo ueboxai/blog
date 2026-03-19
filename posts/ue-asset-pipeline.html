@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UE 资产导入管道优化：从 FBX 到引擎的自动化工作流 - 虚幻盒子博客</title>
+    <meta name="description" content="构建高效的 UE 资产导入管道，解决 FBX 导入常见问题，实现从 DCC 工具到引擎的自动化工作流">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        .gradient-text { background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .glass-card { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .prose h2 { @apply text-2xl font-bold mt-12 mb-6 text-white; }
+        .prose h3 { @apply text-xl font-semibold mt-8 mb-4 text-slate-200; }
+        .prose p { @apply mb-6 text-slate-300 leading-relaxed; }
+        .prose ul { @apply list-disc list-inside mb-6 text-slate-300 space-y-2; }
+        .prose ol { @apply list-decimal list-inside mb-6 text-slate-300 space-y-2; }
+        .prose code { @apply bg-slate-800 px-2 py-1 rounded text-sm font-mono text-blue-400; }
+        .prose pre { @apply bg-slate-900 border border-slate-700 text-slate-300 p-4 rounded-xl overflow-x-auto mb-6; }
+        .prose pre code { @apply bg-transparent text-slate-300 p-0; }
+        .prose blockquote { @apply border-l-4 border-blue-500 pl-4 italic text-slate-400 mb-6 bg-slate-800/50 py-3 pr-4 rounded-r-lg; }
+        .prose a { @apply text-blue-400 hover:text-blue-300 transition; }
+        .prose strong { @apply text-white; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200">
+    <header class="sticky top-0 z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+            <a href="/" class="flex items-center space-x-3">
+                <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center"><i class="fas fa-cube text-white text-sm"></i></div>
+                <span class="text-white font-semibold">虚幻盒子博客</span>
+            </a>
+            <a href="/" class="text-slate-400 hover:text-white transition"><i class="fas fa-arrow-left mr-1"></i>返回首页</a>
+        </div>
+    </header>
+
+    <section class="relative overflow-hidden border-b border-slate-800">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-900/10 via-slate-950 to-purple-900/10"></div>
+        <div class="relative max-w-4xl mx-auto px-4 py-16">
+            <div class="flex items-center space-x-2 mb-6">
+                <span class="px-3 py-1 bg-cyan-500/20 text-cyan-400 text-sm rounded-full">资产管道</span>
+                <span class="px-3 py-1 bg-rose-500/20 text-rose-400 text-sm rounded-full">自动化</span>
+                <span class="px-3 py-1 bg-amber-500/20 text-amber-400 text-sm rounded-full">FBX</span>
+            </div>
+            <h1 class="text-3xl md:text-5xl font-bold text-white mb-6">UE 资产导入管道优化：从 FBX 到引擎的自动化工作流</h1>
+            <div class="flex flex-wrap items-center text-slate-400 text-sm gap-4">
+                <span><i class="far fa-calendar mr-2"></i>2026年3月24日</span>
+                <span><i class="far fa-clock mr-2"></i>13 分钟阅读</span>
+                <span><i class="far fa-user mr-2"></i>虚幻盒子团队</span>
+            </div>
+        </div>
+    </section>
+
+    <article class="max-w-4xl mx-auto px-4 py-12">
+        <div class="glass-card rounded-2xl p-8 md:p-12 mb-12">
+            <div class="prose max-w-none">
+                <p class="text-lg text-slate-300 mb-8">
+                    资产导入是 UE 项目中最耗时且容易出错的环节之一。美术在 Maya/Blender/3ds Max 中制作的资产，导入 UE 时常常出现缩放错误、材质丢失、碰撞体问题。本文介绍如何构建自动化的资产导入管道，将导入时间从小时级缩短到分钟级。
+                </p>
+
+                <h2>一、FBX 导入常见问题分析</h2>
+
+                <h3>1.1 缩放与单位问题</h3>
+                <p>最常见的导入问题，根源在于 DCC 工具与 UE 的单位系统差异：</p>
+                <table class="w-full text-left border-collapse mb-6">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="py-3 text-white">DCC 工具</th>
+                            <th class="py-3 text-white">默认单位</th>
+                            <th class="py-3 text-white">导入 UE 表现</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3">Maya</td>
+                            <td class="py-3">厘米 (cm)</td>
+                            <td class="py-3">✅ 正确</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3">3ds Max</td>
+                            <td class="py-3">英寸/通用单位</td>
+                            <td class="py-3">⚠️ 需要转换</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3">Blender</td>
+                            <td class="py-3">米 (m)</td>
+                            <td class="py-3">⚠️ 需要 ×100</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3">Cinema 4D</td>
+                            <td class="py-3">厘米 (cm)</td>
+                            <td class="py-3">✅ 正确</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>1.2 坐标系差异</h3>
+                <p>不同软件的坐标系定义不同：</p>
+                <ul>
+                    <li><strong>Maya/3ds Max</strong>：Y-up（导入 UE 需要转换）</li>
+                    <li><strong>Blender</strong>：Z-up（与 UE 一致）</li>
+                    <li><strong>UE</strong>：Z-up，左手坐标系</li>
+                </ul>
+
+                <h3>1.3 材质与纹理丢失</h3>
+                <p>FBX 导入时材质不会自动关联纹理，需要手动重新指定。常见原因：</p>
+                <ul>
+                    <li>纹理路径是绝对路径，在其他电脑上无法找到</li>
+                    <li>材质名称不匹配</li>
+                    <li>使用了 UE 不支持的材质节点</li>
+                </ul>
+
+                <h2>二、DCC 工具导出规范</h2>
+
+                <h3>2.1 Maya 导出设置</h3>
+                <pre><code>; FBX 导出选项（Maya）
+- File Type: FBX export
+- Current Selection: Yes（只导出选中的）
+- Animation: 根据需要
+- Cameras: No（除非需要）
+- Lights: No（除非需要）
+- Embed Media: Yes（嵌入纹理）
+- Axis Conversion: Y-up（自动转换）
+- Units: Centimeters
+- Up Axis: Y
+- Geometry:
+  - Smoothing Groups: Yes
+  - Triangulate: No（让 UE 处理）
+  - Tangents/Binormals: Yes</code></pre>
+
+                <h3>2.2 Blender 导出设置</h3>
+                <pre><code>; FBX 导出选项（Blender）
+- Path Mode: Copy（复制纹理）
+- Embed Textures: Yes
+- Scale: 0.01（米转厘米）
+- Apply Transform: Yes
+- Forward: -Z
+- Up: Y（Blender 是 Z-up，需要转换）</code></pre>
+
+                <h3>2.3 命名与层级规范</h3>
+                <p>导出前确保：</p>
+                <ul>
+                    <li>对象名称符合项目命名规范</li>
+                    <li>删除空组和历史节点</li>
+                    <li>冻结变换（Freeze Transformations）</li>
+                    <li>删除构造历史（Delete History/Modifier Stack）</li>
+                </ul>
+
+                <h2>三、UE 导入设置优化</h2>
+
+                <h3>3.1 静态网格导入设置</h3>
+                <pre><code>; 推荐的 FBX Import Options
+- Mesh:
+  - Transform Vertex to Absolute: Yes
+  - Bake Pivot in Vertex: No
+  - Import Mesh LODs: Yes（如果 FBX 包含 LOD）
+  - Normal Import Method: Import Normals and Tangents
+  - Combine Meshes: No（保持独立对象）
+
+- Materials:
+  - Import Materials: No（使用项目材质模板）
+  - Import Textures: No（单独导入纹理）
+
+- Collision:
+  - Auto Generate Collision: No（手动设置更精确）
+  - Collision Complexity: CTF_UseDefault
+
+- LOD:
+  - Generate LODs: Yes（如果没有预计算 LOD）
+  - Number of LODs: 4
+  - LOD0 Triangle Percent: 100%
+  - LOD1 Triangle Percent: 50%
+  - LOD2 Triangle Percent: 25%
+  - LOD3 Triangle Percent: 12%</code></pre>
+
+                <h3>3.2 骨骼网格导入设置</h3>
+                <pre><code>; Skeletal Mesh Import Options
+- Mesh:
+  - Import Mesh: Yes
+  - Import Morph Targets: Yes（如果有 blend shapes）
+  - Update Skeleton Reference Pose: Yes
+
+- Skeleton:
+  - Skeleton: 选择已有骨架或创建新的
+  - Use T0 as Reference Pose: Yes
+
+- Animation:
+  - Import Animations: Yes
+  - Animation Length: Exported Time
+  - Import Meshes in Bone Hierarchy: Yes</code></pre>
+
+                <h2>四、自动化导入管道构建</h2>
+
+                <h3>4.1 Python 自动化脚本</h3>
+                <p>使用 UE Python API 批量导入：</p>
+                <pre><code># import_assets.py
+import unreal
+
+def import_fbx(fbx_path, destination_path):
+    """导入单个 FBX 文件"""
+    
+    # 设置导入选项
+    options = unreal.FbxImportUI()
+    options.set_editor_property('import_mesh', True)
+    options.set_editor_property('import_materials', False)
+    options.set_editor_property('import_textures', False)
+    options.set_editor_property('import_animations', False)
+    
+    # 静态网格设置
+    options.static_mesh_import_data.set_editor_property(
+        'normal_import_method', 
+        unreal.FBXNormalImportMethod.FBXNIM_IMPORT_NORMALS_AND_TANGENTS
+    )
+    
+    # 执行导入
+    task = unreal.AssetImportTask()
+    task.set_editor_property('filename', fbx_path)
+    task.set_editor_property('destination_path', destination_path)
+    task.set_editor_property('options', options)
+    task.set_editor_property('automated', True)
+    
+    unreal.AssetToolsHelpers.get_asset_tools().import_asset_tasks([task])
+    return task
+
+# 批量导入
+fbx_files = unreal.EditorUtilityLibrary.get_selected_assets()
+for fbx in fbx_files:
+    import_fbx(fbx.get_path_name(), '/Game/Imported')</code></pre>
+
+                <h3>4.2 虚幻盒子的自动化导入</h3>
+                <p>虚幻盒子提供了更高级的自动化功能：</p>
+                <pre><code>; 使用虚幻盒子 CLI 批量导入
+uebox import --source=/Assets/Incoming --dest=/Game/Characters
+
+; 自动处理：
+; - 检测并修复缩放问题
+; - 自动匹配材质模板
+; - 生成 LOD 和碰撞体
+; - 验证命名规范
+; - 生成导入报告</code></pre>
+
+                <h3>4.3 文件夹监控自动导入</h3>
+                <p>设置监控文件夹，新文件自动导入：</p>
+                <pre><code>; 配置监控规则（uebox.yaml）
+watchers:
+  - path: "D:/Project/Incoming/Characters"
+    destination: "/Game/Characters"
+    import_options:
+      generate_lods: true
+      collision: "auto"
+      material_template: "/Game/Materials/M_Char_Template"
+    
+  - path: "D:/Project/Incoming/Environment"
+    destination: "/Game/Environment"
+    import_options:
+      generate_lods: true
+      collision: "complex"</code></pre>
+
+                <h2>五、材质与纹理自动化</h2>
+
+                <h3>5.1 材质模板系统</h3>
+                <p>创建标准化的材质模板，导入时自动应用：</p>
+                <pre><code>; 材质模板命名规范
+M_Template_Character      ; 角色材质模板
+M_Template_Prop           ; 道具材质模板
+M_Template_Environment    ; 环境材质模板
+M_Template_Transparent    ; 透明材质模板
+
+; 每个模板包含：
+; - 基础颜色、法线、粗糙度、金属度贴图槽
+; - 参数化的颜色调整
+; - 标准的材质函数</code></pre>
+
+                <h3>5.2 纹理自动导入与压缩</h3>
+                <p>根据纹理用途自动设置压缩格式：</p>
+                <table class="w-full text-left border-collapse mb-6">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="py-3 text-white">纹理类型</th>
+                            <th class="py-3 text-white">后缀</th>
+                            <th class="py-3 text-white">压缩格式</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3">漫反射/基础颜色</td>
+                            <td class="py-3">_D, _BaseColor</td>
+                            <td class="py-3">BC1 (DXT1)</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3">法线贴图</td>
+                            <td class="py-3">_N, _Normal</td>
+                            <td class="py-3">BC5 (DXT5)</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3">粗糙度/金属度/AO</td>
+                            <td class="py-3">_RMA, _ORM</td>
+                            <td class="py-3">BC7</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3">UI/图标</td>
+                            <td class="py-3">_UI</td>
+                            <td class="py-3">UserInterface2D</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3">HDR/天空盒</td>
+                            <td class="py-3">_HDR</td>
+                            <td class="py-3">HDR</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>六、碰撞体自动生成</h2>
+
+                <h3>6.1 碰撞体类型选择</h3>
+                <ul>
+                    <li><strong>Box</strong>：建筑、箱子、简单几何体</li>
+                    <li><strong>Sphere/Capsule</strong>：角色、圆形物体</li>
+                    <li><strong>Convex</strong>：复杂但凸的物体</li>
+                    <li><strong>Complex</strong>：精确碰撞，性能开销大</li>
+                </ul>
+
+                <h3>6.2 自动碰撞生成脚本</h3>
+                <pre><code># generate_collision.py
+import unreal
+
+def generate_collision(static_mesh, complexity):
+    """为静态网格生成碰撞体"""
+    
+    # 获取静态网格编辑器子系统
+    editor_subsystem = unreal.get_editor_subsystem(
+        unreal.StaticMeshEditorSubsystem
+    )
+    
+    # 根据复杂度选择算法
+    if complexity == "box":
+        editor_subsystem.set_generate_box_collision(static_mesh, True)
+    elif complexity == "convex":
+        editor_subsystem.set_generate_convex_collision(
+            static_mesh, 
+            hull_count=4,
+            max_hull_verts=16
+        )
+    elif complexity == "complex":
+        body_setup = static_mesh.get_body_setup()
+        body_setup.set_editor_property('collision_trace_flag', 
+            unreal.CollisionTraceFlag.CTF_USE_COMPLEX_AS_SIMPLE)
+    
+    # 保存修改
+    unreal.EditorAssetLibrary.save_loaded_asset(static_mesh)
+
+# 批量处理
+assets = unreal.EditorUtilityLibrary.get_selected_assets()
+for asset in assets:
+    if isinstance(asset, unreal.StaticMesh):
+        generate_collision(asset, "convex")</code></pre>
+
+                <h2>七、导入质量验证</h2>
+
+                <h3>7.1 自动检查清单</h3>
+                <p>导入后自动验证：</p>
+                <ul>
+                    <li>✅ 缩放是否正确（1 unit = 1 cm）</li>
+                    <li>✅ 法线方向是否正确</li>
+                    <li>✅ UV 是否在 0-1 范围内</li>
+                    <li>✅ 是否有重叠面</li>
+                    <li>✅ 多边形数量是否在预算内</li>
+                    <li>✅ 材质是否正确关联</li>
+                    <li>✅ 碰撞体是否正确生成</li>
+                </ul>
+
+                <h3>7.2 虚幻盒子的验证报告</h3>
+                <pre><code>; 导入后自动生成报告
+uebox validate /Game/Imported/Character_01
+
+; 输出：
+[✓] Scale: 1.0 (correct)
+[✓] Normals: facing outward
+[✓] UVs: within 0-1 range
+[!] Poly count: 15,420 (warning: budget is 10,000)
+[✗] Missing collision: no collision mesh found
+[✓] Materials: 2/2 assigned correctly</code></pre>
+
+                <h2>八、完整工作流示例</h2>
+
+                <h3>8.1 美术 → 引擎 的标准流程</h3>
+                <ol>
+                    <li><strong>美术导出</strong>：按规范导出 FBX 到共享文件夹</li>
+                    <li><strong>自动检测</strong>：虚幻盒子监控文件夹变化</li>
+                    <li><strong>自动导入</strong>：按规则导入到正确位置</li>
+                    <li><strong>自动处理</strong>：生成 LOD、碰撞体、应用材质模板</li>
+                    <li><strong>自动验证</strong>：检查质量和规范</li>
+                    <li><strong>生成报告</strong>：通知美术导入结果</li>
+                </ol>
+
+                <h3>8.2 时间对比</h3>
+                <table class="w-full text-left border-collapse mb-6">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="py-3 text-white">步骤</th>
+                            <th class="py-3 text-white">手动流程</th>
+                            <th class="py-3 text-white">自动化流程</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3">导出 FBX</td>
+                            <td class="py-3">5 min</td>
+                            <td class="py-3">5 min</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3">导入 UE</td>
+                            <td class="py-3">10 min</td>
+                            <td class="py-3">0 min（自动）</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3">修复缩放/材质</td>
+                            <td class="py-3">15 min</td>
+                            <td class="py-3">0 min（自动）</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3">生成 LOD</td>
+                            <td class="py-3">10 min</td>
+                            <td class="py-3">0 min（自动）</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3">设置碰撞体</td>
+                            <td class="py-3">10 min</td>
+                            <td class="py-3">0 min（自动）</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 font-bold">总计</td>
+                            <td class="py-3 font-bold text-red-400">50 min</td>
+                            <td class="py-3 font-bold text-green-400">5 min</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>总结</h2>
+                <p>构建高效的资产导入管道需要：</p>
+                <ol>
+                    <li><strong>标准化导出规范</strong>：统一 DCC 工具的导出设置</li>
+                    <li><strong>自动化导入脚本</strong>：减少重复性手动操作</li>
+                    <li><strong>材质模板系统</strong>：自动应用标准材质</li>
+                    <li><strong>自动验证机制</strong>：在问题扩散前发现</li>
+                    <li><strong>持续优化</strong>：根据项目需求调整管道</li>
+                </ol>
+
+                <blockquote>
+                    虚幻盒子的资产管道自动化功能，可以帮助团队构建从 DCC 工具到 UE 引擎的无缝工作流，让美术专注于创作，而不是繁琐的导入操作。
+                </blockquote>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-2 mb-12">
+            <span class="text-slate-400">标签：</span>
+            <a href="/tags/资产管道" class="px-3 py-1 bg-slate-800 text-slate-300 rounded-full text-sm hover:bg-slate-700 transition">资产管道</a>
+            <a href="/tags/自动化" class="px-3 py-1 bg-slate-800 text-slate-300 rounded-full text-sm hover:bg-slate-700 transition">自动化</a>
+            <a href="/tags/fbx" class="px-3 py-1 bg-slate-800 text-slate-300 rounded-full text-sm hover:bg-slate-700 transition">FBX</a>
+        </div>
+
+        <div class="glass-card rounded-2xl p-8 text-center">
+            <h3 class="text-xl font-bold text-white mb-2">提升 UE 开发效率</h3>
+            <p class="text-slate-400 mb-6">使用虚幻盒子的资产管道自动化功能，让导入工作流更高效</p>
+            <a href="https://uebox.ai" target="_blank" class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition">免费试用虚幻盒子 <i class="fas fa-arrow-right ml-2"></i></a>
+        </div>
+    </article>
+
+    <footer class="border-t border-slate-800 py-12">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <div class="flex items-center justify-center space-x-3 mb-4">
+                <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center"><i class="fas fa-cube text-white text-sm"></i></div>
+                <span class="text-white font-semibold">虚幻盒子</span>
+            </div>
+            <p class="text-slate-500 text-sm">&copy; 2026 UEBox. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
