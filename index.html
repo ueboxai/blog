@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>虚幻盒子博客 - UE 开发效率工具</title>
+    <meta name="description" content="虚幻盒子官方技术博客，分享 Unreal Engine 开发技巧、工具使用指南和行业洞察">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+            <a href="/" class="flex items-center space-x-2">
+                <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-cube text-white text-xl"></i>
+                </div>
+                <span class="text-xl font-bold text-gray-900">虚幻盒子</span>
+            </a>
+            <nav class="hidden md:flex space-x-6">
+                <a href="/" class="text-gray-600 hover:text-blue-600 transition">首页</a>
+                <a href="/tags/ue5" class="text-gray-600 hover:text-blue-600 transition">UE5</a>
+                <a href="/tags/教程" class="text-gray-600 hover:text-blue-600 transition">教程</a>
+                <a href="https://uebox.ai" target="_blank" class="text-blue-600 font-medium">官网 →</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="bg-gradient-to-br from-blue-600 to-indigo-700 text-white py-20">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">虚幻盒子技术博客</h1>
+            <p class="text-xl text-blue-100 mb-8">专注 Unreal Engine 开发效率提升，分享工具、技巧与最佳实践</p>
+            <a href="https://uebox.ai" target="_blank" class="inline-flex items-center px-6 py-3 bg-white text-blue-600 rounded-lg font-semibold hover:bg-gray-100 transition">
+                <i class="fas fa-rocket mr-2"></i>
+                体验虚幻盒子
+            </a>
+        </div>
+    </section>
+
+    <!-- Articles -->
+    <main class="max-w-6xl mx-auto px-4 py-12">
+        <div class="grid md:grid-cols-3 gap-8">
+            <!-- Article 1 -->
+            <article class="bg-white rounded-xl shadow-sm hover:shadow-md transition overflow-hidden">
+                <div class="h-48 bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                    <i class="fas fa-bolt text-white text-5xl"></i>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center space-x-2 mb-3">
+                        <span class="px-2 py-1 bg-blue-100 text-blue-600 text-xs rounded">UE5</span>
+                        <span class="px-2 py-1 bg-green-100 text-green-600 text-xs rounded">性能优化</span>
+                    </div>
+                    <h2 class="text-xl font-bold mb-2 hover:text-blue-600 transition">
+                        <a href="/posts/ue5-lighting-optimization.html">UE5 光照烘焙优化完全指南</a>
+                    </h2>
+                    <p class="text-gray-600 mb-4">从 Lumen 到静态光照，全面解析 UE5 光照系统的性能优化策略，让你的场景帧率提升 50%...</p>
+                    <div class="flex items-center justify-between text-sm text-gray-500">
+                        <span><i class="far fa-calendar mr-1"></i> 2026-03-19</span>
+                        <span><i class="far fa-clock mr-1"></i> 8 分钟</span>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Article 2 -->
+            <article class="bg-white rounded-xl shadow-sm hover:shadow-md transition overflow-hidden">
+                <div class="h-48 bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+                    <i class="fas fa-project-diagram text-white text-5xl"></i>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center space-x-2 mb-3">
+                        <span class="px-2 py-1 bg-purple-100 text-purple-600 text-xs rounded">蓝图</span>
+                        <span class="px-2 py-1 bg-orange-100 text-orange-600 text-xs rounded">工作流</span>
+                    </div>
+                    <h2 class="text-xl font-bold mb-2 hover:text-blue-600 transition">
+                        <a href="/posts/blueprint-best-practices.html">蓝图开发 10 个最佳实践</a>
+                    </h2>
+                    <p class="text-gray-600 mb-4">避免蓝图 spaghetti code，学习专业团队的蓝图组织规范，提升协作效率...</p>
+                    <div class="flex items-center justify-between text-sm text-gray-500">
+                        <span><i class="far fa-calendar mr-1"></i> 2026-03-18</span>
+                        <span><i class="far fa-clock mr-1"></i> 6 分钟</span>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Article 3 -->
+            <article class="bg-white rounded-xl shadow-sm hover:shadow-md transition overflow-hidden">
+                <div class="h-48 bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center">
+                    <i class="fas fa-box-open text-white text-5xl"></i>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center space-x-2 mb-3">
+                        <span class="px-2 py-1 bg-indigo-100 text-indigo-600 text-xs rounded">工具</span>
+                        <span class="px-2 py-1 bg-pink-100 text-pink-600 text-xs rounded">虚幻盒子</span>
+                    </div>
+                    <h2 class="text-xl font-bold mb-2 hover:text-blue-600 transition">
+                        <a href="/posts/uebox-asset-management.html">如何用虚幻盒子管理百万级资产</a>
+                    </h2>
+                    <p class="text-gray-600 mb-4">大型项目资产管理的痛点与解决方案，从本地库到团队协作的完整工作流...</p>
+                    <div class="flex items-center justify-between text-sm text-gray-500">
+                        <span><i class="far fa-calendar mr-1"></i> 2026-03-17</span>
+                        <span><i class="far fa-clock mr-1"></i> 10 分钟</span>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </main>
+
+    <!-- CTA -->
+    <section class="bg-gray-900 text-white py-16">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-4">提升 UE 开发效率</h2>
+            <p class="text-gray-400 mb-8">加入超过 1000+ 开发者的行列，体验专业级 UE 开发工具</p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="https://uebox.ai" target="_blank" class="px-8 py-3 bg-blue-600 rounded-lg font-semibold hover:bg-blue-700 transition">
+                    免费试用
+                </a>
+                <a href="https://github.com/uebox" target="_blank" class="px-8 py-3 bg-gray-700 rounded-lg font-semibold hover:bg-gray-600 transition">
+                    <i class="fab fa-github mr-2"></i>GitHub
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 py-8">
+        <div class="max-w-6xl mx-auto px-4 text-center text-gray-600">
+            <p>&copy; 2026 虚幻盒子 UEBox. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
