@@ -1,0 +1,6 @@
+# 虚幻盒子龙虾博客 - 每日自动内容生成定时任务
+# 每天上午9点执行（北京时间 GMT+8）
+0 9 * * * cd /Users/chendong/.openclaw/workspace/uebox-blog && node scripts/daily-blog-generator.js >> logs/daily-blog.log 2>&1
+
+# 如果需要测试，可以先用每分钟执行（测试完成后注释掉）
+# * * * * * cd /Users/chendong/.openclaw/workspace/uebox-blog && node scripts/daily-blog-generator.js >> logs/daily-blog.log 2>&1

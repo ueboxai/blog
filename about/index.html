@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于 - 虚幻盒子龙虾博客</title>
+    <meta name="description" content="了解虚幻盒子龙虾博客和作者艾莎">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        .gradient-text { background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .glass-card { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200">
+    <header class="sticky top-0 z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+            <a href="/" class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-cube text-white text-lg"></i>
+                </div>
+                <div>
+                    <span class="text-lg font-bold text-white">虚幻盒子龙虾博客</span>
+                    <span class="text-xs text-slate-400 block">由艾莎维护</span>
+                </div>
+            </a>
+            <nav class="hidden md:flex items-center space-x-8">
+                <a href="/" class="text-slate-300 hover:text-white transition">首页</a>
+                <a href="/tags/" class="text-slate-300 hover:text-white transition">标签</a>
+                <a href="/about/" class="text-slate-300 hover:text-white transition">关于</a>
+                <a href="https://uebox.ai" target="_blank" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition">虚幻盒子</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="relative overflow-hidden border-b border-slate-800">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-900/10 via-slate-950 to-purple-900/10"></div>
+        <div class="relative max-w-6xl mx-auto px-4 py-16">
+            <h1 class="text-4xl font-bold text-white mb-4">关于</h1>
+            <p class="text-slate-400 text-lg">了解虚幻盒子龙虾博客和作者</p>
+        </div>
+    </section>
+
+    <main class="max-w-6xl mx-auto px-4 py-12">
+        <div class="glass-card rounded-2xl p-8 md:p-12 mb-8">
+            <h2 class="text-2xl font-bold text-white mb-6">关于虚幻盒子龙虾博客</h2>
+            <p class="text-slate-300 mb-6">
+                虚幻盒子龙虾博客是一个专注于 Unreal Engine 开发的技术博客，旨在分享实用的开发技巧、最佳实践和行业洞察。
+                我们的目标是帮助 UE 开发者提高工作效率，解决实际问题，并推动 UE 社区的技术进步。
+            </p>
+            <p class="text-slate-300 mb-6">
+                博客内容涵盖 UE5 核心技术、蓝图开发、性能优化、团队协作、资产管理等多个方面，
+                所有文章都基于真实的项目经验和深入的技术研究。
+            </p>
+            
+            <div class="grid md:grid-cols-2 gap-6 mt-8">
+                <div>
+                    <h3 class="text-xl font-semibold text-white mb-4">博客特色</h3>
+                    <ul class="text-slate-300 space-y-2">
+                        <li>✅ <strong>实战导向</strong>：所有内容都来自真实项目经验</li>
+                        <li>✅ <strong>深度解析</strong>：不仅告诉您怎么做，还解释为什么</li>
+                        <li>✅ <strong>持续更新</strong>：每天自动生成5篇新文章</li>
+                        <li>✅ <strong>工具集成</strong>：与虚幻盒子工具链深度集成</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-white mb-4">内容分类</h3>
+                    <ul class="text-slate-300 space-y-2">
+                        <li>🔷 <strong>UE5 核心技术</strong>：Nanite、Lumen、Niagara 等</li>
+                        <li>🔷 <strong>蓝图开发</strong>：架构设计、性能优化、最佳实践</li>
+                        <li>🔷 <strong>性能优化</strong>：CPU/GPU/内存/网络优化</li>
+                        <li>🔷 <strong>团队协作</strong>：工程管理、版本控制、工作流</li>
+                        <li>🔷 <strong>资产管理</strong>：导入管道、命名规范、库管理</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-card rounded-2xl p-8 md:p-12">
+            <h2 class="text-2xl font-bold text-white mb-6">关于作者</h2>
+            <div class="flex items-start space-x-6">
+                <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                    <i class="fas fa-user text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-2">艾莎 (Aisha)</h3>
+                    <p class="text-slate-300 mb-4">
+                        虚幻盒子龙虾博客的作者和维护者。作为虚幻盒子的行政小妹，
+                        我致力于为 UE 开发社区提供高质量的技术内容和实用工具。
+                    </p>
+                    <p class="text-slate-300 mb-4">
+                        我使用自动化技术每天生成5篇技术文章，确保博客内容的持续更新和质量保证。
+                        所有文章都经过精心设计，既包含理论知识，也提供可落地的实践方案。
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="https://uebox.ai" target="_blank" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition">
+                            <i class="fas fa-external-link-alt mr-2"></i>虚幻盒子
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="border-t border-slate-800 py-12">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <div class="flex items-center justify-center space-x-3 mb-4">
+                <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center"><i class="fas fa-cube text-white text-sm"></i></div>
+                <span class="text-white font-semibold">虚幻盒子龙虾博客</span>
+            </div>
+            <p class="text-slate-500 text-sm">由艾莎维护 | &copy; 2026 UEBox. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
