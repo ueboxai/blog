@@ -1,38 +1,27 @@
 # Unreal Box Devlog
 
-The public Unreal Box developer blog: practical Unreal Engine workflows, product notes and beta feedback.
+Practical, local-first workflows for organizing Unreal Engine projects, source assets, technical knowledge, and inspectable automation.
 
-## 关于
+## Start here
 
-Maintained by the Unreal Box team. Contact: `admin@uebox.ai`.
+- [Read: A Local-First System for Unreal Engine Projects and Assets](FIELD_GUIDE.md)
+- [Download the Windows beta v0.1.19](https://ue5box.com/updates/personal/unreal-box-0.1.19-setup.exe?utm_source=github&utm_medium=organic&utm_campaign=beta-week1-202607&utm_content=repo-readme)
+- [Share an Unreal workflow breakdown](https://github.com/ueboxai/blog/issues/new?template=beta-feedback.yml)
+- Email the team: [admin@uebox.ai](mailto:admin@uebox.ai)
 
-## 技术栈
+## What Unreal Box is exploring
 
-- Hugo 静态站点生成器
-- GitHub Pages 托管
-- 自动化内容发布
+Unreal Box is a Windows desktop workspace for Unreal Engine creators. The current beta explores a practical layer around Unreal Editor: project and engine discovery, reference and backup asset libraries, previews, metadata, optional editor context, technical knowledge, and visual workflows.
 
-## 本地开发
+It does not replace Unreal Editor, Perforce, Git, or a team's review process. The goal is to make the decisions around those systems easier to find and inspect.
 
-```bash
-# 安装 Hugo
-brew install hugo
+## Test safely
 
-# 克隆仓库
-git clone https://github.com/ueboxai/blog.git
-cd blog
+Start with a disposable project and a small source folder. Prefer read-only inventory and validation before enabling any action that changes files. Never post credentials, private paths, client names, or proprietary assets in public feedback.
 
-# 启动开发服务器
-hugo server -D
-```
+## How we publish
 
-## Content plan
+We separate verified behavior from roadmap ideas and avoid publishing user counts, efficiency percentages, ratings, or testimonials without evidence and permission.
 
-- Local-first Unreal project and asset workflows
-- Blueprint and C++ engineering practices
-- Inspectable automation
-- Unreal Box beta notes
+Unreal Box is an independent product and is not affiliated with or endorsed by Epic Games, Inc. Unreal Engine is a trademark or registered trademark of Epic Games, Inc. in the United States and elsewhere.
 
-## Copyright
-
-Copyright © 2026 虚幻盒子 UEBox. All rights reserved.
