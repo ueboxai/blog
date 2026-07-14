@@ -5,6 +5,7 @@ Practical, local-first workflows for organizing Unreal Engine projects, source a
 ## Start here
 
 - [Read: A Local-First System for Unreal Engine Projects and Assets](FIELD_GUIDE.md)
+- [Checklist: Before You Import a Source Asset into Unreal Engine](IMPORT_PREFLIGHT.md)
 - [Download the Windows beta v0.1.19](https://ue5box.com/updates/personal/unreal-box-0.1.19-setup.exe?utm_source=github&utm_medium=organic&utm_campaign=beta-week1-202607&utm_content=repo-readme)
 - [Share an Unreal workflow breakdown](https://github.com/ueboxai/blog/issues/new?template=beta-feedback.yml)
 - Email the team: [admin@uebox.ai](mailto:admin@uebox.ai)
