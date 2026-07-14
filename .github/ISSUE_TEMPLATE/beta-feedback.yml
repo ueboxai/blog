@@ -1,0 +1,70 @@
+name: Unreal workflow teardown
+description: Show us where an Unreal Engine project, asset, or automation workflow becomes difficult to trace.
+title: "[Beta workflow] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping us pressure-test Unreal Box. Concrete examples are useful, but please remove client names, private paths, credentials, and proprietary assets.
+
+  - type: dropdown
+    id: role
+    attributes:
+      label: Your role
+      options:
+        - Unreal developer
+        - Technical artist
+        - Environment or character artist
+        - Tools or pipeline engineer
+        - Producer or team lead
+        - Student or educator
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Workflow area
+      options:
+        - Project and engine discovery
+        - Source asset organization
+        - Unreal import and reimport
+        - Naming and metadata
+        - Dependencies and versioning
+        - Technical knowledge
+        - Automation and batch operations
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-workflow
+    attributes:
+      label: What do you do today?
+      description: Describe the current steps, tools, handoffs, and source of truth.
+      placeholder: "Example: Source FBX files arrive in..., we check..., then import to..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: breakdown
+    attributes:
+      label: Where does it break down?
+      description: Tell us what becomes slow, risky, ambiguous, or hard to recover.
+    validations:
+      required: true
+
+  - type: textarea
+    id: safe-automation
+    attributes:
+      label: What would make automation trustworthy?
+      description: Examples include previews, backups, changelists, dry runs, approvals, or result reports.
+
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy check
+      options:
+        - label: I removed credentials, private paths, client names, and proprietary material from this report.
+          required: true
