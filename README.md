@@ -24,4 +24,3 @@ Start with a disposable project and a small source folder. Prefer read-only inve
 We separate verified behavior from roadmap ideas and avoid publishing user counts, efficiency percentages, ratings, or testimonials without evidence and permission.
 
 Unreal Box is an independent product and is not affiliated with or endorsed by Epic Games, Inc. Unreal Engine is a trademark or registered trademark of Epic Games, Inc. in the United States and elsewhere.
-
